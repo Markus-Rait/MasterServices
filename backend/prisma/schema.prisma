@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator frontendClient {
+  provider = "prisma-client-js"
+  output = "./../../frontend//node_modules/@prisma-app/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String  @id() @default(uuid())
+  firstName String
+  lastName  String
+  gender    Gender
+  email     String  @unique
+  phone     String  @unique
+  address   String  @unique
+  role      Role    @default(CLIENT)
+  password  String
+  avatar    String
+  cart      Cart[]
+  orders    Order[]
+}
+
+model Service {
+  id          String   @id() @default(uuid())
+  title       String
+  image       String?
+  description String?
+  change      String[]
+  categories  String[]
+  Cart        Cart[]
+  Order       Order[]
+}
+
+model Cart {
+  id        String  @id() @default(uuid())
+  userID    String
+  user      User    @relation(fields: [userID], references: [id])
+  serviceID String
+  service   Service @relation(fields: [serviceID], references: [id])
+}
+
+model Order {
+  id        String  @id() @default(uuid())
+  userID    String
+  user      User    @relation(fields: [userID], references: [id])
+  serviceID String
+  service   Service @relation(fields: [serviceID], references: [id])
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Role {
+  CLIENT
+  MASTER
+  ADMIN
+}
+
+// 0 = /
+enum Categories {
+    WINDOW_AND_DOOR_REPAIR0REPLACEMENT
+    PLUMBING_SERVICES
+    ELECTRICAL_WORK
+    HVAC_MAINTENANCE0REPAIR
+    ROOF_REPAIR0REPLACEMENT
+    FOUNDATION_REPAIR
+    LANDSCAPING_SERVICES
+    PEST_CONTROL
+    CLEANING_SERVICES
+    PAINTING_AND_DECORATING
+    FLOORING_INSTALLATION0REPAIR
+    CARPENTRY_SERVICES
+    HOME_AUTOMATION
+    APPLIANCE_REPAIR0INSTALLATION
+    DRAIN_CLEANING
+    MOLD_REMEDIATION
+    SECURITY_SYSTEMS_INSTALLATION
+    ENERGY_AUDITS
+    SIDING_REPAIR0REPLACEMENT
+    TREE_TRIMMING0REMOVAL
+    SWIMMING_POOL_MAINTENANCE
+    DECK_BUILDING0REPAIR
+    INSULATION_SERVICES
+    SOLAR_PANEL_INSTALLATION
+    FENCING_INSTALLATION0REPAIR
+}
